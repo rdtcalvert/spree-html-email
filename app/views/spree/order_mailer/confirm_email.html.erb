@@ -6,7 +6,7 @@
 </p>
 <p class="link">
   To view the complete details of your order use the following link:
-  <%= link_to(order_url(@order, :host => Spree::Config[:site_url]), order_url(@order, :host => Spree::Config[:site_url])) %>
+  <%= link_to(order_url(@order, :host => Spree::Store.current.url), order_url(@order, :host => Spree::Store.current.url)) %>
 </p>
 <h1>
   Order Summary
