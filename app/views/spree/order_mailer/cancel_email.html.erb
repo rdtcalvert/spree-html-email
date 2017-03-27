@@ -6,7 +6,7 @@
 </p>
 <p class="link">
   Celotno naročilo si lahko ogledate tukaj:
-  <%= link_to(order_url(@order, :host => Spree::Config[:site_url]), order_url(@order, :host => Spree::Config[:site_url])) %>
+  <%= link_to(order_url(@order, :host => Spree::Store.current.url), order_url(@order, :host => Spree::Store.current.url)) %>
 </p>
 <h2>
   <%= Spree.t("order_summary_canceld") %>
