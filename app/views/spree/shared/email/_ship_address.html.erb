@@ -6,16 +6,16 @@
     <%= order.ship_address.company %>
   <% end%>
 
-  <% if order.shipping_method.name == "Prevzem na pošti" %>
-    <%= order.shipping_method.name %>
+  <% if order.shipments.last.shipping_method.name == "Prevzem na pošti" %>
+    <%= order.shipments.last.shipping_method.name %>
 
     <%= "#{order.pickup_post} #{PostOffice.where(:postcode => order.pickup_post)[0].postname}" %><br />
 
     <%= order.ship_address.country.name %>
-  <% elsif order.shipping_method.name == "Prevzem na Petrolu"
+  <% elsif order.shipments.last.shipping_method.name == "Prevzem na Petrolu"
     petrol_station = PetrolStation.where(:id => order.pickup_petrol_station)
     %>
-    <%= order.shipping_method.name %>
+    <%= order.shipments.last.shipping_method.name %>
     <br />
     <%= petrol_station.empty? ? "" : petrol_station[0].naziv %>
     <br />
@@ -34,8 +34,8 @@
     <br/>
     <%= order.ship_address.zipcode != "-" ? order.ship_address.zipcode : "" %> <%= order.ship_address.city %>
     <br />
-    <% if order.shipping_method.name == "Dostava po 16:00 uri" or order.shipping_method.name == "Dostava do 10:00 ure" %>
-        Pošta Slovenije - <%= order.shipping_method.name.downcase %>
+    <% if order.shipments.last.shipping_method.name == "Dostava po 16:00 uri" or order.shipments.last.shipping_method.name == "Dostava do 10:00 ure" %>
+        Pošta Slovenije - <%= order.shipments.last.shipping_method.name.downcase %>
 
         <br/>
     <% end %>
