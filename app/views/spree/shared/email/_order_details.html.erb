@@ -36,7 +36,6 @@
   <tr>
     <td class="ship_address">
       <h2><span><%= Spree.t(:billing_address) %></span></h2>
-      <% binding.pry%>
       <%= render :partial => 'spree/shared/email/address', :locals => {:order => order, :address => order.bill_address} %>
     </td>
     <td class="ship_address">
