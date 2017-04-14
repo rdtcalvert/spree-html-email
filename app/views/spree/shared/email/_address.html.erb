@@ -1,14 +1,48 @@
 <div class="details">
-  <span class="full-name"><%= address.full_name %></span>
+  <span class="full-name"><% if order.shipments.last.shipping_method.name == "Osebni prevzem" %>Za <% end %><%= address.full_name %></span>
   <br/>
-  <%= address.address1 %>
-  <% if address.address2.present? %>
+  <% if address.company.present? %>
+    <br />
+    <%= address.company %>
+  <% end%>
+
+  <% if order.shipments.last.shipping_method.name == "Prevzem na pošti" %>
+      <%= order.shipments.last.shipping_method.name %>
+
+      <%= "#{order.pickup_post} #{PostOffice.where(:postcode => order.pickup_post)[0].postname}" %><br />
+
+      <%= order.ship_address.country.name %>
+  <% elsif order.shipments.last.shipping_method.name == "Prevzem na Petrolu"
+    petrol_station = PetrolStation.where(:id => order.pickup_petrol_station)
+    %>
+    <%= order.shipments.last.shipping_method.name %>
+    <br />
+    <%= petrol_station.nil? ? "" : petrol_station[0].naziv %>
+    <br />
+    <%= petrol_station.nil? ? "" : petrol_station[0].naslov %>
+    <br />
+    <%= petrol_station.nil? ? "" : "#{petrol_station[0].posta}, #{petrol_station[0].kraj}" %>
+    <br />
+
+    <%= ship_address.country.name %>
+  <% elsif order.shipments.last.shipping_method.name == "Osebni prevzem" %>
+      Gasparijeva ulica 2<br />
+      1000 Ljubljana<br />
+      Slovenija
+  <% else %>
+    <%= address.address1 %>
+    <% if address.address2.present? %>
+      <br/>
+      <%= address.address2 %>
+    <% end %>
     <br/>
-    <%= address.address2 %>
+    <%= address.zipcode != "-" ? address.zipcode : "" %> <%= address.city %>
+    <br/>
+    <% if order.shipments.last.shipping_method.name == "Dostava po 16:00 uri" or order.shipments.last.shipping_method.name == "Dostava do 10:00 ure" %>
+        Pošta Slovenije - <%= order.shipments.last.shipping_method.name.downcase %>
+
+        <br/>
+    <% end %>
+    <%= address.country.name %>
   <% end %>
-  <br/>
-  <%= [address.city, address.state ? address.state.name : address.state_name].join(', ') %>
-  <br/>
-  <%= address.country.name %>
-  <%= address.zipcode %>
 </div>

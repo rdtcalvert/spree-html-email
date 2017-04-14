@@ -5,7 +5,7 @@
   </tr>
   <tr class="alt">
     <td><%= Spree.t('payment_method') %></td>
-    <td><%= order.payments.collect {|p| p.payment_method.name }.join(', ') %></td>
+    <td><%= order.payments.last.payment_method.name %></td>
   </tr>
   <% if order.payments.last.payment_method.name == "Plačilo po predračunu" && order.payment_state == "balance_due"%>
     <td colspan="2">
@@ -27,20 +27,26 @@
   <% else %>
     <tr>
       <td><%= Spree.t('submitted') %></td>
-      <td><%= l(order.completed_at, :format => "%B %d, %Y") %></td>
+      <td><%= l(order.completed_at, :format => :short) %></td>
     </tr>
   <% end %>
 </table>
 
 <table id="addresses">
   <tr>
-    <td>
-      <h3><span><%= Spree.t(:billing_address) %></span></h3>
-      <%= render :partial => 'spree/shared/email/address', :locals => {:address => order.bill_address} %>
+    <td class="ship_address">
+      <h2><span><%= Spree.t(:billing_address) %></span></h2>
+      <% binding.pry%>
+      <%= render :partial => 'spree/shared/email/address', :locals => {:order => order, :address => order.bill_address} %>
     </td>
-    <td>
-      <h3><span><%= Spree.t(:shipping_address) %></span></h3>
-      <%= render :partial => 'spree/shared/email/address', :locals => {:address => order.ship_address} %>
+    <td class="ship_address">
+      <% if order.shipments.last.shipping_method.name == "Osebni prevzem" %>
+        <h2><span>Podatki za osebni prevzem</span></h2>
+        <%= render :partial => 'spree/shared/email/pickup', :locals => {:address => order.ship_address} %>
+        <% else %>
+        <h2><span><%= Spree.t(:shipping_address) %></span></h2>
+        <%= render :partial => 'spree/shared/email/ship_address', :locals => {:order => order} %>
+      <% end %>
     </td>
   </tr>
 </table>
