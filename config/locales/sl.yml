@@ -13,5 +13,5 @@ sl:
     canceled: "Stornirano"
     submitted: "Oddano"
     dear_customer: "Dragi"
-    thank_you: "Hvala za zaupanje in lep pozdrav,<br/>Lekarnar"
+    thank_you: "Hvala za zaupanje in lep pozdrav,"
     order_summary_canceld: "Povzetek naročila [STORNIRANO]"

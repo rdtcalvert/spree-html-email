@@ -2,7 +2,12 @@
   Zdravo <%= @order.bill_address ? @order.bill_address.firstname : ''  %>,
 </p>
 <p class="overview">
-  Zahvaljujemo se vam za nakup v spletni lekarni <a href="http://www.lekarnar.com">www.lekarnar.com</a>. Naši farmacevti bodo pripravili vaše naročilo in vas obvestili, ko bo poslano.
+  Zahvaljujemo se vam za nakup v spletni lekarni <a href="http://www.lekarnar.com">www.lekarnar.com</a>.
+  <% if @order.shipments.last.shipping_method.name == "Osebni prevzem" %>
+    Naši farmacevti bodo pripravili vaše naročilo in vas obvestili, ko bo pripravljeno na prevzem.
+  <% else %>
+    Naši farmacevti bodo pripravili vaše naročilo in vas obvestili, ko bo poslano.
+  <% end %>
 </p>
 <p class="link">
   <%= Spree.t("order_details") %>
