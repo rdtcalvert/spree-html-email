@@ -1,7 +1,7 @@
 <div id="shipping">
   <% if @shipment.shipping_method.name == "Osebni prevzem" %>
     <h2>Naročilo lahko prevzamete</h2>
-    <p>od ponedeljka do petka med 8. in 19. uro ali ob sobotah med 8. in 13. uro na naslovu Lekarne Nove Poljane</p>
+    <p>od ponedeljka do petka med 7. in 19. uro ali ob sobotah med 8. in 13. uro na naslovu Lekarne Nove Poljane</p>
   <% else %>
     <h2><%= Spree.t(:shipping_address) %></h2>
   <% end %>

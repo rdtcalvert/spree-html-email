@@ -2,7 +2,7 @@
   <p class="tracking">
   	<% if botttom %><h2><span><%= t(:tracking_information) %></span></h2><% end %>
     <% if ["Pošta Slovenije", "Dostava do 10:00 ure", "Dostava po 16:00 uri", "Prevzem na pošti", "Prevzem na Petrolu"].include?(shipment.shipping_method.name) %>
-      <p>Poteku dostave lahko sledite na straneh Pošte Slovenije: <%= link_to shipment.tracking, "http://sledenje.posta.si/" %></p>
+      <p>Poteku dostave lahko sledite na straneh Pošte Slovenije: <%= link_to shipment.tracking, "http://sledenje.posta.si/", target: '_blank' %></p>
     <% else %>
         <%= shipment.tracking %>
     <% end %>
