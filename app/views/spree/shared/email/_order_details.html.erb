@@ -5,7 +5,7 @@
   </tr>
   <tr class="alt">
     <td><%= Spree.t('payment_method') %></td>
-    <td><%= order.payments.last.payment_method.name %></td>
+    <td><%= (order.payments.valid.map { |payment| payment.payment_method.name}).join(', ') %></td> <!-- order.payments.last.payment_method.name -->
   </tr>
   <% if order.payments.last.payment_method.name == "Plačilo po predračunu" && order.payment_state == "balance_due"%>
     <td colspan="2">
