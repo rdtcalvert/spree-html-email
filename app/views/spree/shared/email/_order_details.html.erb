@@ -67,11 +67,11 @@
           <%= item.variant.product.name %>
           <%= "(" + variant_options(item.variant) + ")" unless item.variant .option_values.empty? %>
         </td>
-        <td class="price number"><%= number_to_currency(item.price) %></td>
+        <td class="price number"><%= Spree::Money.new(item.price, currency: order.currency).to_html %></td>
         <td class="qty number"><%= item.quantity %></td>
 
 
-        <td class="total number"><%= number_to_currency(item.price * item.quantity) %></td>
+        <td class="total number"><%= Spree::Money.new((item.price * item.quantity), currency: order.currency).to_html %></td>
       </tr>
     <% end %>
   </tbody>
@@ -81,7 +81,7 @@
         <%= Spree.t(:subtotal) %>
       </td>
       <td class="total number">
-        <%= number_to_currency order.item_total %>
+        <%= Spree::Money.new(order.item_total, currency: order.currency).to_html %>
       </td>
     </tr>
   </tbody>
@@ -93,7 +93,7 @@
           <%= adjustment.label %>
         </td>
         <td class="total number">
-          <%= number_to_currency adjustment.amount %>
+          <%= Spree::Money.new(adjustment.amount, currency: order.currency).to_html  %>
         </td>
       </tr>
     <% end %>
@@ -110,23 +110,25 @@
       </td>
     </tr>
   </tbody>
-  <tbody id="order-total" data-hook="order_details_total">
-    <tr class="total">
-      <td class="title" colspan="3">
-        <%= Spree.t("store_credits.bonus") %>
-      </td>
-      <td class="total number">
-        <span>-<%= number_to_currency order.total_store_credit %></span>
-      </td>
-    </tr>
-  </tbody>
+  <% if order.store_credit? %>
+    <tbody id="order-total" data-hook="order_details_total">
+      <tr class="total">
+        <td class="title" colspan="3">
+          <%= Spree.t("store_credits.bonus") %>
+        </td>
+        <td class="total number">
+          <span>-<%= Spree::Money.new(order.total_store_credit, currency: order.currency).to_html %></span>
+        </td>
+      </tr>
+    </tbody>
+  <% end %>
   <tbody id="order-total" data-hook="order_details_total">
     <tr class="total">
       <td class="title" colspan="3">
         <%= Spree.t(:order_total) %>
       </td>
       <td class="total number">
-        <span id="order_total"><%= number_to_currency order.total_value %></span>
+        <span id="order_total"><%= Spree::Money.new(order.total_value, currency: order.currency).to_html %></span>
       </td>
     </tr>
   </tbody>
