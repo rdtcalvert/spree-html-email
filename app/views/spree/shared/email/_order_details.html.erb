@@ -5,7 +5,7 @@
   </tr>
   <tr class="alt">
     <td><%= Spree.t('payment_method') %></td>
-    <td><%= (order.payments.valid.map { |payment| payment.payment_method.name}).join(', ') %></td> <!-- order.payments.last.payment_method.name -->
+    <td><%= order.payment_methods_names %></td>
   </tr>
   <% if order.payments.last.payment_method.name == "Plačilo po predračunu" && order.payment_state == "balance_due"%>
     <td colspan="2">
@@ -69,6 +69,8 @@
         </td>
         <td class="price number"><%= number_to_currency(item.price) %></td>
         <td class="qty number"><%= item.quantity %></td>
+
+
         <td class="total number"><%= number_to_currency(item.price * item.quantity) %></td>
       </tr>
     <% end %>
@@ -111,10 +113,20 @@
   <tbody id="order-total" data-hook="order_details_total">
     <tr class="total">
       <td class="title" colspan="3">
+        <%= Spree.t("store_credits.bonus") %>
+      </td>
+      <td class="total number">
+        <span>-<%= number_to_currency order.total_store_credit %></span>
+      </td>
+    </tr>
+  </tbody>
+  <tbody id="order-total" data-hook="order_details_total">
+    <tr class="total">
+      <td class="title" colspan="3">
         <%= Spree.t(:order_total) %>
       </td>
       <td class="total number">
-        <span id="order_total"><%= number_to_currency order.total %></span>
+        <span id="order_total"><%= number_to_currency order.total_value %></span>
       </td>
     </tr>
   </tbody>
