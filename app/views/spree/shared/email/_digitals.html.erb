@@ -1,4 +1,4 @@
-<% if gem_available?('spree_digital') && order.some_digital? %>
+<% if Gem::Specification::find_all_by_name('spree_digital').any? && order.some_digital? %>
 <div class="spacer_15"> </div>
 <h2><span><%= t(:digital_download_links) %></span></h2>
 <%== t(:digital_email_description) %>
