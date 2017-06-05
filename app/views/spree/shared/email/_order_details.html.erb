@@ -85,6 +85,22 @@
       </td>
     </tr>
   </tbody>
+  <% if order.line_item_adjustments.exists? %>
+    <% if order.line_item_adjustments.promotion.eligible.exists? %>
+      <tbody id="order-charges" data-hook="order_details_adjustments">
+        <% order.line_item_adjustments.promotion.eligible.group_by(&:label).each do |label, adjustments| %>
+          <tr class="total">
+            <td class="title" colspan="3">
+              <%= label %>
+            </td>
+            <td class="total number">
+              <%= Spree::Money.new(adjustments.sum(&:amount), currency: order.currency).to_html %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    <% end %>
+  <% end %>
   <tbody id="order-charges" data-hook="order_details_adjustments">
     <% order.adjustments.eligible.each do |adjustment| %>
       <% next if (adjustment.source_type == "TaxRate") and (adjustment.amount == 0) %>
