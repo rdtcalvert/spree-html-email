@@ -1,0 +1,17 @@
+sl:
+  digital_email_description: <p>Each link will only work a SINGLE TIME! Also, they will only work WITHIN 24 HOURS!</p>
+  tracking_information: Sledenje pošiljke
+  shipment_details: Podatki o pošiljki
+  digital_item_email_title: "<b>%{name}, %{type}:</b><br/>"
+  time:
+    formats:
+      short: "%-d.%-m.%Y"
+  spree:
+    order_number: "Številka naročila"
+    payment_method: "Način plačila"
+    status: "Status naročila"
+    canceled: "Stornirano"
+    submitted: "Oddano"
+    dear_customer: "Dragi"
+    thank_you: "Hvala za zaupanje in lep pozdrav,"
+    order_summary_canceld: "Povzetek naročila [STORNIRANO]"

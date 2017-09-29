@@ -1,6 +1,9 @@
-<% if shipment.tracking.present? %>
-<p class="tracking">
-	<h2><span><%= t(:tracking_information) %></span></h2>
-	<%= link_to shipment.tracking, "http://google.com/search?&q=#{shipment.tracking}" %>
-</p>
+<% if shipment.shipping_method.id != 3 && shipment.tracking.present? %>
+  <p class="tracking">
+    <% if ["Pošta Slovenije", "Prevzem na pošti", "Dostava do 10:00 ure", "Dostava po 16:00 uri", "Prevzem na Petrolu"].include?(shipment.shipping_method.name) %>
+      <p>Od Pošte Slovenije boste še danes prejeli mail, s pomočjo katerega boste lahko sledili poteku dostave.</p>
+    <% else %>
+      <%= shipment.tracking %>
+    <% end %>
+  </p>
 <% end %>

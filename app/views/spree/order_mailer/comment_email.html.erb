@@ -1,0 +1,15 @@
+<p class="customer">
+  Zdravo <%= @order.bill_address ? @order.bill_address.firstname : ''  %>,
+<p class="overview">
+  V zvezi z vašim naročilom <%= @order.number %> ste prejeli novo sporočilo:
+</p>
+<p style="border-top: 1px solid #dddddd; border-bottom: 1px solid #dddddd; padding: 8px 0px;">
+  <%=raw @order.order_comments.last.body.gsub(/[\n]/,"<br/>") %>
+</p>
+<p class="link">
+  Podrobnosti naročila:
+  <%= link_to(order_url(@order, :host => Spree::Store.current.url), order_url(@order, :host => Spree::Store.current.url)) %>
+</p>
+<p class="thank-you">
+  Hvala za zaupanje in lep pozdrav,
+</p>

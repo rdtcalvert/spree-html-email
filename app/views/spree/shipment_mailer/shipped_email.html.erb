@@ -1,16 +1,17 @@
 <p class="customer">
-  <%= t(:dear_customer, :default => "Dear %{name},", :name => @shipment.order.bill_address ? @shipment.order.bill_address.full_name : 'Customer' ) %>
+  <%= Spree.t(:dear_customer, :default => "Zdravo %{name},", :name => @shipment.order.bill_address ? @shipment.order.bill_address.firstname : '' ) %>
 </p>
 <p class="overview">
-  Your shipment has been shipped
+  vaše naročilo je <% if @shipment.shipping_method.name == "Osebni prevzem" %> pripravljeno na prevzem<% else %>poslano<% if @shipment.shipping_method.name == "Prevzem na pošti" %>, počakalo vas bo na izbrani pošti<% end %>.<% if @shipment.shipping_method.name == "Prevzem na pošti" %> <span style="background-color: red;">Obvestila o prispeli pošiljki ne boste prejeli.</span><% end %><% end %>
 </p>
+<%= render :partial => 'spree/shared/email/shipment_tracking', :locals => { :shipment => @shipment} %>
+<br/>
 <p class="link">
-  To view the complete details of your order use the following link:
-  <%= link_to(order_url(@shipment.order, :host => Spree::Config[:site_url]), order_url(@shipment.order, :host => Spree::Config[:site_url])) %>
+  Oglejte si naročilo:
+  <%= link_to(order_url(@shipment.order, :host => Spree::Store.current.url), order_url(@shipment.order, :host => Spree::Store.current.url)) %>
 </p>
 <%= render :partial => 'spree/shared/email/shipment_details', :locals => {:shipment => @shipment} %>
-<%= render :partial => 'spree/shared/email/shipment_tracking', :locals => { :shipment => @shipment} %>
 <%= render :partial => 'spree/shared/email/digitals', :locals => { :order => @shipment.order } %>
 <p class="thank-you">
-  Thank you for your business.
+  <%= raw Spree.t("thank_you") %>
 </p>

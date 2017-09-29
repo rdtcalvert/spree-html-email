@@ -1,15 +1,25 @@
 <div id="shipping">
-  <h2><%= t(:shipping_address) %></h2>
-  <%= render :partial => 'spree/shared/email/address', :locals => {:address => shipment.address} %>
+  <% if @shipment.shipping_method.name == "Osebni prevzem" %>
+    <h2>Naročilo lahko prevzamete</h2>
+    <p>od ponedeljka do petka med 7. in 19. uro ali ob sobotah med 8. in 13. uro na naslovu Lekarne Nove Poljane</p>
+  <% else %>
+    <h2><%= Spree.t(:shipping_address) %></h2>
+  <% end %>
+  <%= render :partial => 'spree/shared/email/address', :locals => {:order => @shipment.order, :address => @shipment.order.ship_address} %>
 </div>
+<% if @shipment.shipping_method.name != "Osebni prevzem" %>
+<p class="overview">
+  Dostavna služba: <%= @shipment.shipping_method.name %>
+</p>
+<% end %>
 
 <h2><%= t(:shipment_details) %></h2>
 <table id="shipment-details" data-hook="shipment_details">
   <tbody id="line-items" data-hook>
     <tr data-hook="shipment_details_line_items_headers">
-      <th><%= t(:item_description) %></th>
-      <th class="qty number"><%= t(:qty) %></th>
-      <th><%= t(:status) %></th>
+      <th><%= Spree.t(:item_description) %></th>
+      <th class="qty number"><%= Spree.t(:qty) %></th>
+      <th><%= Spree.t(:status) %></th>
     </tr>
     <% shipment.manifest.each do |item| %>
       <tr data-hook="shipment_details_line_item_row" class="<%=cycle('', 'alt')%>">
@@ -18,7 +28,7 @@
           <%= "(" + variant_options(item.variant) + ")" unless item.variant.option_values.empty? %>
         </td>
         <td class="qty number"><%= item.quantity %></td>
-        <td><%= t('shipped') %></td>
+        <td><%= Spree.t('shipped') %></td>
       </tr>
     <% end %>
   </tbody>

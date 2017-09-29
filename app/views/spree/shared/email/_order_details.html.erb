@@ -1,48 +1,65 @@
 <table id="order_summary" class="split">
   <tr>
-    <td>Number</td>
+    <td><%= Spree.t('order_number') %></td>
     <td><%= order.number %></td>
   </tr>
   <tr class="alt">
-    <td>Payment Method</td>
-    <td><%= order.payments.collect {|p| p.payment_method.name }.join(', ') %></td>
+    <td><%= Spree.t('payment_method') %></td>
+    <td><%= order.payment_methods_names %></td>
   </tr>
+  <% if order.payments.last.payment_method.name == "Plačilo po predračunu" && order.payment_state == "balance_due"%>
+    <td colspan="2">
+      Lekarna Nove Poljane<br>
+      Gasparijeva 2<br>
+      1000 Ljubljana<br><br>
+
+      UniCredit  SI56 2900 0005 5230 784<br><br>
+
+      Pri izpolnjevanju naloga UPN v polje sklic vnesite SI00 <%= order.number.gsub("R", "")%><br>
+      V polju koda namena lahko izberete GDSV ali OTHR.
+    </td>
+  <% end %>
   <% if order.canceled? %>
     <tr>
-      <td>Status</td>
-      <td>Canceled</td>
+      <td><%= Spree.t('status') %></td>
+      <td><%= Spree.t('canceled') %></td>
     </tr>
   <% else %>
     <tr>
-      <td>Submitted</td>
-      <td><%= l(order.completed_at, :format => "%B %d, %Y") %></td>
+      <td><%= Spree.t('submitted') %></td>
+      <td><%= l(order.completed_at, :format => :short) %></td>
     </tr>
   <% end %>
 </table>
 
 <table id="addresses">
   <tr>
-    <td>
-      <h2><span><%= t(:billing_address) %></span></h2>
-      <%= render :partial => 'spree/shared/email/address', :locals => {:address => order.bill_address} %>
+    <td class="ship_address">
+      <h2><span><%= Spree.t(:billing_address) %></span></h2>
+      <%= render :partial => 'spree/shared/email/address', :locals => {:order => order, :address => order.bill_address} %>
     </td>
-    <td>
-      <h2><span><%= t(:shipping_address) %></span></h2>
-      <%= render :partial => 'spree/shared/email/address', :locals => {:address => order.ship_address} %>
+    <td class="ship_address">
+      <% if order.shipments.last.shipping_method.name == "Osebni prevzem" %>
+        <h2><span>Podatki za osebni prevzem</span></h2>
+        <%= render :partial => 'spree/shared/email/pickup', :locals => {:address => order.ship_address} %>
+        <% else %>
+        <h2><span><%= Spree.t(:shipping_address) %></span></h2>
+        <%= render :partial => 'spree/shared/email/ship_address', :locals => {:order => order} %>
+      <% end %>
     </td>
   </tr>
 </table>
 
 <div class="spacer_15"> </div>
-<h2><span>Order Details</span></h2>
+<h2><span><%= t('order_details') %></span></h2>
 
 <table id="order_details">
   <tbody id="line-items">
     <tr data-hook="order_details_line_items_headers">
-      <th><%= t(:items_purchased) %></th>
-      <th class="price number"><%= t(:price) %></th>
-      <th class="qty number"><%= t(:qty) %></th>
-      <th class="total number"><%= t(:total) %></th>
+      <th><%= Spree.t(:items_purchased) %></th>
+      <th class="price number"><%= Spree.t(:price) %></th>
+      <th class="qty number"><%= Spree.t(:qty) %></th>
+      <th class="total number"><%= Spree.t(:total) %></th>
     </tr>
     <% order.line_items.each do |item| %>
       <tr data-hook="order_details_line_item_row" class="<%= cycle('', 'alt') %>">
@@ -50,31 +67,49 @@
           <%= item.variant.product.name %>
           <%= "(" + variant_options(item.variant) + ")" unless item.variant .option_values.empty? %>
         </td>
-        <td class="price number"><%= number_to_currency(item.price) %></td>
+        <td class="price number"><%= Spree::Money.new(item.price, currency: order.currency).to_html %></td>
         <td class="qty number"><%= item.quantity %></td>
-        <td class="total number"><%= number_to_currency(item.price * item.quantity) %></td>
+
+
+        <td class="total number"><%= Spree::Money.new((item.price * item.quantity), currency: order.currency).to_html %></td>
       </tr>
     <% end %>
   </tbody>
   <tbody id="subtotal" data-hook="order_details_subtotal">
     <tr id="subtotal-row">
       <td class="title" colspan="3">
-        <%= t(:subtotal) %>
+        <%= Spree.t(:subtotal) %>
       </td>
       <td class="total number">
-        <%= number_to_currency order.item_total %>
+        <%= Spree::Money.new(order.item_total, currency: order.currency).to_html %>
       </td>
     </tr>
   </tbody>
+  <% if order.line_item_adjustments.exists? %>
+    <% if order.line_item_adjustments.promotion.eligible.exists? %>
+      <tbody id="order-charges" data-hook="order_details_adjustments">
+        <% order.line_item_adjustments.promotion.eligible.group_by(&:label).each do |label, adjustments| %>
+          <tr class="total">
+            <td class="title" colspan="3">
+              <%= label %>
+            </td>
+            <td class="total number">
+              <%= Spree::Money.new(adjustments.sum(&:amount), currency: order.currency).to_html %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    <% end %>
+  <% end %>
   <tbody id="order-charges" data-hook="order_details_adjustments">
     <% order.adjustments.eligible.each do |adjustment| %>
-      <% next if (adjustment.originator_type == "TaxRate") and (adjustment.amount == 0) %>
+      <% next if (adjustment.source_type == "TaxRate") and (adjustment.amount == 0) %>
       <tr class="total">
         <td class="title" colspan="3">
           <%= adjustment.label %>
         </td>
         <td class="total number">
-          <%= number_to_currency adjustment.amount %>
+          <%= Spree::Money.new(adjustment.amount, currency: order.currency).to_html  %>
         </td>
       </tr>
     <% end %>
@@ -82,10 +117,34 @@
   <tbody id="order-total" data-hook="order_details_total">
     <tr class="total">
       <td class="title" colspan="3">
-        <%= t(:order_total) %>
+        <b>
+          <%= Spree.t(:shipping) %>:
+        </b>
       </td>
       <td class="total number">
-        <span id="order_total"><%= number_to_currency order.total %></span>
+        <%= Spree::Money.new(order.shipments.to_a.sum(&:cost), currency: order.currency).to_html %>
+      </td>
+    </tr>
+  </tbody>
+  <% if order.store_credit? %>
+    <tbody id="order-total" data-hook="order_details_total">
+      <tr class="total">
+        <td class="title" colspan="3">
+          <%= Spree.t("store_credits.bonus") %>
+        </td>
+        <td class="total number">
+          <span>-<%= Spree::Money.new(order.total_store_credit, currency: order.currency).to_html %></span>
+        </td>
+      </tr>
+    </tbody>
+  <% end %>
+  <tbody id="order-total" data-hook="order_details_total">
+    <tr class="total">
+      <td class="title" colspan="3">
+        <%= Spree.t(:order_total) %>
+      </td>
+      <td class="total number">
+        <span id="order_total"><%= Spree::Money.new(order.total_value, currency: order.currency).to_html %></span>
       </td>
     </tr>
   </tbody>
