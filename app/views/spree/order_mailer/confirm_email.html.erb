@@ -24,7 +24,7 @@
   <%# Spree.t("order_summary") %>
   <%= translation["checkout"]["order_summary"] %>
 </h2>
-<%= render :partial => 'spree/shared/email/order_details', :locals => {:order => @order} %>
+<%= render :partial => 'spree/shared/email/order_details', :locals => {:order => @order, translation: translation} %>
 <%#= render :partial => 'spree/shared/email/digitals', :locals => { :order => @order } %>
 <p class="thank-you">
   <%# raw Spree.t("thank_you") %>

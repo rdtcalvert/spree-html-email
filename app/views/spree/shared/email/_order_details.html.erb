@@ -1,9 +1,3 @@
-<% if order.ship_address.country.name != "Slovenija"  %>
-  <% translation = YAML.load_file('config/shipping-eu.yml') %>
-<% else %>
-  <% translation = YAML.load_file('config/shipping-slo.yml') %>
-<% end %>
-
 <table id="order_summary" class="split">
   <tr>
     <!-- <td><%# Spree.t('order_number') %></td> -->

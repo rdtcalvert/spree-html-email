@@ -10,6 +10,12 @@ Spree::ShipmentMailer.class_eval do
     else
       subject_part = Spree.t('shipment_mailer.shipped_email.subject')
     end
+
+    if @shipment.order.ship_address.country.name != "Slovenija"
+      @translation = YAML.load_file('config/shipping-eu.yml')
+    else
+      @translation = YAML.load_file('config/shipping-slo.yml')
+    end
     subject += "#{Spree::Config[:site_name]} #{subject_part} ##{@shipment.order.number}"
     mail(to: @shipment.order.email, from: from_address, subject: subject)
   end

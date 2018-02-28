@@ -1,8 +1,3 @@
-<% if @shipment.order.ship_address.country.name != "Slovenija"  %>
-  <% translation = YAML.load_file('config/shipping-eu.yml') %>
-<% else %>
-  <% translation = YAML.load_file('config/shipping-slo.yml') %>
-<% end %>
 <p class="customer">
   <% if @shipment.order.ship_address.country.name == "Slovenija"  %>
     <%= Spree.t(:dear_customer, :default => "Zdravo %{name},", :name => @shipment.order.bill_address ? @shipment.order.bill_address.firstname : '' ) %>
@@ -20,13 +15,13 @@
 <%= render :partial => 'spree/shared/email/shipment_tracking', :locals => { :shipment => @shipment} %>
 <br/>
 <p class="link">
-  <%= translation["map"]["view_your_order"] %>:
+  <%= @translation["map"]["view_your_order"] %>:
   <%= link_to(order_url(@shipment.order, :host => Spree::Store.current.url), order_url(@shipment.order, :host => Spree::Store.current.url)) %>
 </p>
-<%= render :partial => 'spree/shared/email/shipment_details', :locals => {:shipment => @shipment} %>
+<%= render :partial => 'spree/shared/email/shipment_details', :locals => {:shipment => @shipment, :translation => @translation} %>
 <%= render :partial => 'spree/shared/email/digitals', :locals => { :order => @shipment.order } %>
 <p class="thank-you">
   <%#= raw Spree.t("thank_you") %>
-  <%= raw translation["map"]["thank_you"] %><br>
+  <%= raw @translation["map"]["thank_you"] %><br>
   <a href="http://www.lekarnar.com">www.lekarnar.com</a>.
 </p>
