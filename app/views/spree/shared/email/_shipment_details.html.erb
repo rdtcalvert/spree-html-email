@@ -1,7 +1,7 @@
 <% if @shipment.order.ship_address.country.name != "Slovenija"  %>
-  <% config = YAML.load_file('config/shipping-eu.yml') %>
+  <% translation = YAML.load_file('config/shipping-eu.yml') %>
 <% else %>
-  <% config = YAML.load_file('config/shipping-slo.yml') %>
+  <% translation = YAML.load_file('config/shipping-slo.yml') %>
 <% end %>
 
 <div id="shipping">
@@ -10,25 +10,25 @@
     <p>od ponedeljka do petka med 7. in 19. uro ali ob sobotah med 8. in 13. uro na naslovu Lekarne Nove Poljane</p>
   <% else %>
     <!-- <h2><%#= Spree.t(:shipping_address) %></h2> -->
-    <h2><%= config["checkout"]["shipping_address"] %></h2>
+    <h2><%= translation["checkout"]["shipping_address"] %></h2>
   <% end %>
   <%= render :partial => 'spree/shared/email/address', :locals => {:order => @shipment.order, :address => @shipment.order.ship_address} %>
 </div>
 <% if @shipment.shipping_method.name != "Osebni prevzem" %>
   <p class="overview">
-    <%= config["checkout"]["delivery_service"] %>: <%= @shipment.shipping_method.name %>
+    <%= translation["checkout"]["delivery_service"] %>: <%= @shipment.shipping_method.name %>
   </p>
 <% end %>
 
 <!-- <h2><%#= t(:shipment_details) %></h2> -->
-<h2><%= config["map"]["shipment_details"] %></h2>
+<h2><%= translation["map"]["shipment_details"] %></h2>
 <table id="shipment-details" data-hook="shipment_details">
   <tbody id="line-items" data-hook>
     <tr data-hook="shipment_details_line_items_headers">
       <!-- <th><%# Spree.t(:item_description) %></th> -->
-      <th><%= config["map"]["items_purchased"] %></th>
+      <th><%= translation["map"]["items_purchased"] %></th>
       <!-- <th class="qty number"><%#= Spree.t(:qty) %></th> -->
-      <th class="qty number"><%= config["checkout"]["qty"] %></th>
+      <th class="qty number"><%= translation["checkout"]["qty"] %></th>
       <!-- <th><%#= Spree.t(:status) %></th> -->
       <th><%= Spree.t(:status) %></th>
     </tr>
@@ -39,7 +39,8 @@
           <%= "(" + variant_options(item.variant) + ")" unless item.variant.option_values.empty? %>
         </td>
         <td class="qty number"><%= item.quantity %></td>
-        <td><%= Spree.t('shipped') %></td>
+        <!-- <td><%# Spree.t('shipped') %></td> -->
+        <td><%= translation["map"]["shipped"] %></td>
       </tr>
     <% end %>
   </tbody>
