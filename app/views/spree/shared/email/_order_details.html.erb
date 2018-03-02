@@ -1,13 +1,22 @@
 <table id="order_summary" class="split">
   <tr>
-    <td><%= Spree.t('order_number') %></td>
+    <!-- <td><%# Spree.t('order_number') %></td> -->
+    <td><%= translation["map"]["order_number"] %></td>
     <td><%= order.number %></td>
   </tr>
   <tr class="alt">
-    <td><%= Spree.t('payment_method') %></td>
-    <td><%= order.payment_methods_names %></td>
+    <!-- <td><%# Spree.t('payment_method') %></td> -->
+    <td><%= translation["checkout"]["payment_method"] %></td>
+
+    <% if order.ship_address.country.name == "Slovenija"  %>
+      <td><%= order.payment_methods_names %></td>
+    <% elsif order.payment_methods_names.include?("Plačilo po predračunu") %>
+      <td>Payment in Advance/Pro Forma Invoice</td>
+    <% elsif order.payment_methods_names.include?("Plačilo s kreditno kartico") %>
+      <td>Payment with credit card</td>
+    <% end %>
   </tr>
-  <% if order.payments.last.payment_method.name == "Plačilo po predračunu" && order.payment_state == "balance_due"%>
+  <% if order.payments.last.payment_method.name == "Plačilo po predračunu" && order.payment_state == "balance_due" %>
     <td colspan="2">
       Lekarna Nove Poljane<br>
       Gasparijeva 2<br>
@@ -18,8 +27,8 @@
       SWIFT/BIC: BACXSI22<br><br>
       <!-- UniCredit  SI56 2900 0005 5230 784<br><br> -->
 
-      Pri izpolnjevanju naloga UPN v polje sklic vnesite SI00 <%= order.number.gsub("R", "")%><br>
-      V polju koda namena lahko izberete GDSV ali OTHR.
+      <%= "#{translation["map"]["mail_message1"]} #{order.number.gsub("R", "")} #{translation["map"]["mail_message2"]}" %><br>
+      <%= "#{translation["map"]["mail_message3"]}" %>
     </td>
   <% end %>
   <% if order.canceled? %>
@@ -29,7 +38,8 @@
     </tr>
   <% else %>
     <tr>
-      <td><%= Spree.t('submitted') %></td>
+      <!-- <td><%#= Spree.t('submitted') %></td> -->
+      <td><%= translation["checkout"]["complete"] %></td>
       <td><%= l(order.completed_at, :format => :short) %></td>
     </tr>
   <% end %>
@@ -38,7 +48,8 @@
 <table id="addresses">
   <tr>
     <td class="ship_address">
-      <h2><span><%= Spree.t(:billing_address) %></span></h2>
+      <!-- <h2><span><%#= Spree.t(:billing_address) %></span></h2> -->
+      <h2><span><%= translation["checkout"]["billing_address"] %></span></h2>
       <%= render :partial => 'spree/shared/email/address', :locals => {:order => order, :address => order.bill_address} %>
     </td>
     <td class="ship_address">
@@ -46,7 +57,8 @@
         <h2><span>Podatki za osebni prevzem</span></h2>
         <%= render :partial => 'spree/shared/email/pickup', :locals => {:address => order.ship_address} %>
         <% else %>
-        <h2><span><%= Spree.t(:shipping_address) %></span></h2>
+        <h2><span><%# Spree.t(:shipping_address) %></span></h2>
+        <h2><span><%= translation["checkout"]["shipping_address"] %></span></h2>
         <%= render :partial => 'spree/shared/email/ship_address', :locals => {:order => order} %>
       <% end %>
     </td>
@@ -54,15 +66,20 @@
 </table>
 
 <div class="spacer_15"> </div>
-<h2><span><%= t('order_details') %></span></h2>
+<!-- <h2><span><%# t('order_details') %></span></h2> -->
+<h2><span><%= translation["map"]["order_details"] %></span></h2>
 
 <table id="order_details">
   <tbody id="line-items">
     <tr data-hook="order_details_line_items_headers">
-      <th><%= Spree.t(:items_purchased) %></th>
-      <th class="price number"><%= Spree.t(:price) %></th>
-      <th class="qty number"><%= Spree.t(:qty) %></th>
-      <th class="total number"><%= Spree.t(:total) %></th>
+      <!-- <th><%# Spree.t(:items_purchased) %></th> -->
+      <th><%= translation["map"]["items_purchased"] %></th>
+      <!-- <th class="price number"><%#= Spree.t(:price) %></th> -->
+      <th class="price number"><%= translation["checkout"]["price"] %></th>
+      <!-- <th class="qty number"><%#= Spree.t(:qty) %></th> -->
+      <th class="qty number"><%= translation["checkout"]["qty"] %></th>
+      <!-- <th class="total number"><%#= Spree.t(:total) %></th> -->
+      <th class="total number"><%= translation["checkout"]["total"] %></th>
     </tr>
     <% order.line_items.each do |item| %>
       <tr data-hook="order_details_line_item_row" class="<%= cycle('', 'alt') %>">
@@ -81,7 +98,8 @@
   <tbody id="subtotal" data-hook="order_details_subtotal">
     <tr id="subtotal-row">
       <td class="title" colspan="3">
-        <%= Spree.t(:subtotal) %>
+        <%# Spree.t(:subtotal) %>
+        <%= translation["checkout"]["sub_total"] %>
       </td>
       <td class="total number">
         <%= Spree::Money.new(order.item_total, currency: order.currency).to_html %>
@@ -121,7 +139,8 @@
     <tr class="total">
       <td class="title" colspan="3">
         <b>
-          <%= Spree.t(:shipping) %>:
+          <%# Spree.t(:shipping) %>
+          <%= translation["checkout"]["delivery"] %>:
         </b>
       </td>
       <td class="total number">
@@ -144,7 +163,8 @@
   <tbody id="order-total" data-hook="order_details_total">
     <tr class="total">
       <td class="title" colspan="3">
-        <%= Spree.t(:order_total) %>
+        <%#= Spree.t(:order_total) %>
+        <%= translation["checkout"]["total"] %>
       </td>
       <td class="total number">
         <span id="order_total"><%= Spree::Money.new(order.total_value, currency: order.currency).to_html %></span>

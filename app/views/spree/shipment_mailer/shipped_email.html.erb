@@ -1,17 +1,27 @@
 <p class="customer">
-  <%= Spree.t(:dear_customer, :default => "Zdravo %{name},", :name => @shipment.order.bill_address ? @shipment.order.bill_address.firstname : '' ) %>
+  <% if @shipment.order.ship_address.country.name == "Slovenija"  %>
+    <%= Spree.t(:dear_customer, :default => "Zdravo %{name},", :name => @shipment.order.bill_address ? @shipment.order.bill_address.firstname : '' ) %>
+  <% else %>
+    You will receive an email today from Pošta Slovenije with package tracking number.
+  <% end %>
 </p>
 <p class="overview">
-  vaše naročilo je <% if @shipment.shipping_method.name == "Osebni prevzem" %> pripravljeno na prevzem<% else %>poslano<% if @shipment.shipping_method.name == "Prevzem na pošti" %>, počakalo vas bo na izbrani pošti<% end %>.<% if @shipment.shipping_method.name == "Prevzem na pošti" %> <span style="background-color: red;">Obvestila o prispeli pošiljki ne boste prejeli.</span><% end %><% end %>
+  <% if @shipment.order.ship_address.country.name == "Slovenija"  %>
+    vaše naročilo je <% if @shipment.shipping_method.name == "Osebni prevzem" %> pripravljeno na prevzem<% else %>poslano<% if @shipment.shipping_method.name == "Prevzem na pošti" %>, počakalo vas bo na izbrani pošti<% end %>.<% if @shipment.shipping_method.name == "Prevzem na pošti" %> <span style="background-color: red;">Obvestila o prispeli pošiljki ne boste prejeli.</span><% end %><% end %>
+  <% else %>
+    Your order was dispatched.
+  <% end %>
 </p>
 <%= render :partial => 'spree/shared/email/shipment_tracking', :locals => { :shipment => @shipment} %>
 <br/>
 <p class="link">
-  Oglejte si naročilo:
+  <%= @translation["map"]["view_your_order"] %>:
   <%= link_to(order_url(@shipment.order, :host => Spree::Store.current.url), order_url(@shipment.order, :host => Spree::Store.current.url)) %>
 </p>
-<%= render :partial => 'spree/shared/email/shipment_details', :locals => {:shipment => @shipment} %>
+<%= render :partial => 'spree/shared/email/shipment_details', :locals => {:shipment => @shipment, :translation => @translation} %>
 <%= render :partial => 'spree/shared/email/digitals', :locals => { :order => @shipment.order } %>
 <p class="thank-you">
-  <%= raw Spree.t("thank_you") %>
+  <%#= raw Spree.t("thank_you") %>
+  <%= raw @translation["map"]["thank_you"] %><br>
+  <a href="http://www.lekarnar.com">www.lekarnar.com</a>.
 </p>
