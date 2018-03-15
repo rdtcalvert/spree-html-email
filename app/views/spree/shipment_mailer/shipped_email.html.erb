@@ -2,9 +2,14 @@
   <% if @shipment.order.ship_address.country.name == "Slovenija"  %>
     <%= Spree.t(:dear_customer, :default => "Zdravo %{name},", :name => @shipment.order.bill_address ? @shipment.order.bill_address.firstname : '' ) %>
   <% else %>
-    You will receive an email today from Pošta Slovenije with package tracking number.
+    <% name = @shipment.order.bill_address ? @shipment.order.bill_address.firstname : '' %>
+    <%= "Dear #{name}" %>,
+    <% if @shipment.shipping_method.name != "GLS" %>
+      You will receive an email today from Pošta Slovenije with package tracking number.
+    <% end %>
   <% end %>
 </p>
+
 <p class="overview">
   <% if @shipment.order.ship_address.country.name == "Slovenija"  %>
     vaše naročilo je <% if @shipment.shipping_method.name == "Osebni prevzem" %> pripravljeno na prevzem<% else %>poslano<% if @shipment.shipping_method.name == "Prevzem na pošti" %>, počakalo vas bo na izbrani pošti<% end %>.<% if @shipment.shipping_method.name == "Prevzem na pošti" %> <span style="background-color: red;">Obvestila o prispeli pošiljki ne boste prejeli.</span><% end %><% end %>
