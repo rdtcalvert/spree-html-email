@@ -1,31 +1,26 @@
-<% if @order.ship_address.country.name != "Slovenija"  %>
-  <% translation = YAML.load_file('config/shipping-eu.yml') %>
-<% else %>
-  <% translation = YAML.load_file('config/shipping-slo.yml') %>
-<% end %>
 <p class="customer">
   <% if @order.ship_address.country.name == "Slovenija"  %>
     <%= Spree.t(:dear_customer, :default => "Spoštovani %{name},", :name => @order.bill_address ? @order.bill_address.full_name : '' ) %>
   <% else %>
-    <%= translation["map"]["dear"] %> <%= @order.bill_address ? @order.bill_address.firstname : '' %>,
+    <%= @translation["map"]["dear"] %> <%= @order.bill_address ? @order.bill_address.firstname : '' %>,
   <% end %>
 </p>
 <p class="overview">
-  <%= raw translation["map"]["order_is_canceled"] %>
+  <%= raw @translation["map"]["order_is_canceled"] %>
 </p>
 <p class="link">
   <!-- You can see the entire order here. -->
   <!-- Celotno naročilo si lahko ogledate tukaj: -->
-  <%= raw translation["map"]["see_entire_order_here"] %>:
+  <%= raw @translation["map"]["see_entire_order_here"] %>:
   <%= link_to(order_url(@order, :host => Spree::Store.current.url), order_url(@order, :host => Spree::Store.current.url)) %>
 </p>
 <h2>
   <%# Spree.t("order_summary_canceld") %>
-  <%= raw translation["map"]["order_summary_canceld"] %><br>
+  <%= raw @translation["map"]["order_summary_canceld"] %><br>
 </h2>
-<%= render :partial => 'spree/shared/email/order_details', :locals => {:order => @order, :translation => translation} %>
+<%= render :partial => 'spree/shared/email/order_details', :locals => {:order => @order, :translation => @translation} %>
 <p class="thank-you">
   <%# raw Spree.t("thank_you") %>
-  <%# raw translation["map"]["thank_you"] %><br>
+  <%# raw @translation["map"]["thank_you"] %><br>
   <a href="http://www.lekarnar.com">www.lekarnar.com</a>.
 </p>
