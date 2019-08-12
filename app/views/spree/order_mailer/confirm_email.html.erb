@@ -9,7 +9,7 @@
       <% if @order.shipments.last.shipping_method.name == "Osebni prevzem" %>
         <%= @translation["map"]["pharmacists_prepare_order_pro_forma_personal_takeover"] %>
       <% else %>
-        <%= @translation["map"]["pharmacists_prepare_order_pro_forma"] %>
+        <%= raw @translation["map"]["pharmacists_prepare_order_pro_forma"] %>
       <% end %>
   <% else %>
     <%= @translation["map"]["thank_you_for_purchase"] %> <a href="http://www.lekarnar.com">www.lekarnar.com</a>.
