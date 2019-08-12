@@ -3,12 +3,35 @@
 </p>
 
 <p class="overview">
-  <%= @translation["map"]["thank_you_for_purchase"] %> <a href="http://www.lekarnar.com">www.lekarnar.com</a>.
-  <% if @order.shipments.last.shipping_method.name == "Osebni prevzem" %>
-    Naši farmacevti bodo pripravili vaše naročilo in vas obvestili, ko bo pripravljeno na prevzem.
+  <%# Different mails for 'Plačilo po predračunu' and other payment types, and both can fork  again into personal takeover and post delivery  %>
+  <% if @order.payment_methods_names.include?("Plačilo po predračunu") %>
+    <%= @translation["map"]["thank_you_for_purchase_pro_forma"] %> <a href="http://www.lekarnar.com">www.lekarnar.com</a>.
+      <% if @order.shipments.last.shipping_method.name == "Osebni prevzem" %>
+        <%= @translation["map"]["pharmacists_prepare_order_pro_forma_personal_takeover"] %>
+      <% else %>
+        <%= raw @translation["map"]["pharmacists_prepare_order_pro_forma"] %>
+      <% end %>
   <% else %>
-    <%= @translation["map"]["pharmacists_prepare_order"] %>
+    <%= @translation["map"]["thank_you_for_purchase"] %> <a href="http://www.lekarnar.com">www.lekarnar.com</a>.
+    <% if @order.shipments.last.shipping_method.name == "Osebni prevzem" %>
+      <%= @translation["map"]["pharmacists_prepare_order_personal_takeover"] %>
+    <% else %>
+      <%= @translation["map"]["pharmacists_prepare_order"] %>
+    <% end %>
   <% end %>
+
+<%# this is the old code %>
+<%
+=begin %>
+    <%= @translation["map"]["thank_you_for_purchase"] %> <a href="http://www.lekarnar.com">www.lekarnar.com</a>.
+    <% if @order.shipments.last.shipping_method.name == "Osebni prevzem" %>
+    Naši farmacevti bodo pripravili vaše naročilo in vas obvestili, ko bo pripravljeno na prevzem.
+    <% else %>
+    <%= @translation["map"]["pharmacists_prepare_order"] %>
+    <% end %>
+<%
+=end %>
+
 </p>
 <p class="link">
   <%# Spree.t("order_details") %>
@@ -17,7 +40,7 @@
 </p>
 <h2>
   <%# Spree.t("order_summary") %>
-  <%= @translation["checkout"]["order_summary"] %>
+  <%= @translation["map"]["order_summary"] %>
 </h2>
 
 <%= render :partial => 'spree/shared/email/order_details', :locals => {:order => @order, translation: @translation} %>
